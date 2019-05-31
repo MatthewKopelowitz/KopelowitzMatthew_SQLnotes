@@ -68,6 +68,56 @@ public class MainActivity extends AppCompatActivity {
         showMessage("Data: ", buffer.toString());
     }
 
+    public void searchData(View view) {
+        Log.d("MyContactApp", "DatabaseHelper: searching data");
+
+        String name = editName.getText().toString();
+        String phone = editPhone.getText().toString();
+        String address = editAddress.getText().toString();
+        Cursor res = myDb.getAllData();
+
+        if (res.getCount() == 0) {
+            showMessage("Error", "No data found in database");
+            return;
+        }
+
+        StringBuffer buffer = new StringBuffer();
+        int count = 0;
+        while (res.moveToNext()) {
+
+            String dbName = res.getString(1);
+            String dbPhone = res.getString(2);
+            String dbAddress = res.getString(3);
+
+            if (name.equals("")) {
+                dbName = "";
+            }
+
+            if (phone.equals("")) {
+                dbPhone = "";
+            }
+
+            if (address.equals("")) {
+                dbAddress = "";
+            }
+
+            if ( name.equals(dbName)  && address.equals(dbAddress) && phone.equals(dbPhone)) {
+                //Append res columns to the buffer - see StringBuffer and Cursor API's
+                buffer.append("ID: " + res.getString(0) + "\n");
+                buffer.append("Name: " + res.getString(1) + "\n");
+                buffer.append("Phone: " + res.getString(2) + "\n");
+                buffer.append("Address: " + res.getString(3) + "\n\n");
+                count++;
+            }
+        }
+        if (count == 0) {
+            showMessage("Error: ", "There are no contacts with those parameters in your contacts.");
+            return;
+        }
+
+        showMessage("Data: ", buffer.toString());
+    }
+
     public void showMessage(String title, String message) {
         //put log.d's in here
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
